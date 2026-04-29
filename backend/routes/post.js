@@ -110,5 +110,75 @@ router.delete("/delete", (req, res) => {
         }
     );
 });
+// ── GET POST STATS (aggregate functions) ──────────────
+router.get("/stats", (req, res) => {
+    const sql = `
+        SELECT 
+            p.post_id,
+            p.content,
+            u.username,
+            COUNT(DISTINCT l.like_id)      AS total_likes,
+            COUNT(DISTINCT c.comment_id)   AS total_comments
+        FROM POSTS p
+        JOIN USERS u ON p.user_id = u.user_id
+        LEFT JOIN LIKES l    ON l.post_id = p.post_id
+        LEFT JOIN COMMENTS c ON c.post_id = p.post_id
+        GROUP BY p.post_id, p.content, u.username
+        ORDER BY total_likes DESC
+    `;
+
+    db.query(sql, (err, results) => {
+        if (err) return res.json({ success: false, message: "Failed" });
+        res.json({ success: true, stats: results });
+    });
+});
+
+// ── SEARCH POSTS ──────────────────────────────────────
+router.get("/search", (req, res) => {
+    const { query } = req.query;
+
+    if (!query) {
+        return res.json({ success: false, message: "Query is required" });
+    }
+
+    db.query(`
+        SELECT p.post_id, p.content, p.image_url, p.created_at,
+               u.username, u.user_id, u.profile_pic,
+               COUNT(DISTINCT l.like_id)    AS like_count,
+               COUNT(DISTINCT c.comment_id) AS comment_count
+        FROM POSTS p
+        JOIN USERS u ON p.user_id = u.user_id
+        LEFT JOIN LIKES l    ON l.post_id = p.post_id
+        LEFT JOIN COMMENTS c ON c.post_id = p.post_id
+        WHERE p.content LIKE ?
+        GROUP BY p.post_id
+        ORDER BY p.created_at DESC`,
+        [`%${query}%`],
+        (err, results) => {
+            if (err) return res.json({ success: false, message: "Search failed" });
+            res.json({ success: true, posts: results });
+        }
+    );
+});
+
+// ── EDIT POST ─────────────────────────────────────────
+router.post("/edit", (req, res) => {
+    const { postId, userId, content } = req.body;
+
+    if (!postId || !userId || !content) {
+        return res.json({ success: false, message: "All fields are required" });
+    }
+
+    db.query("UPDATE POSTS SET content = ? WHERE post_id = ? AND user_id = ?",
+        [content, postId, userId],
+        (err, result) => {
+            if (err) return res.json({ success: false, message: "Edit failed" });
+            if (result.affectedRows === 0) {
+                return res.json({ success: false, message: "Post not found or unauthorized" });
+            }
+            res.json({ success: true, message: "Post updated" });
+        }
+    );
+});
 
 module.exports = router;

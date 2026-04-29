@@ -73,7 +73,7 @@ function loadPosts() {
         postsDiv.innerHTML = "";
 
         if (data.posts.length === 0) {
-            postsDiv.innerHTML = "<p style='text-align:center; color:#999; margin-top:20px;'>No posts yet. Follow someone!</p>";
+            postsDiv.innerHTML = "<p style='text-align:center; color:#b2bec3; margin-top:20px;'>No posts yet. Follow someone!</p>";
             return;
         }
 
@@ -81,10 +81,12 @@ function loadPosts() {
             const isOwnPost = post.user_id == userId;
 
             postsDiv.innerHTML += `
-                <div class="post-card">
+                <div class="post-card" id="post-${post.post_id}">
                     <div class="post-header">
                         <img src="${post.profile_pic
-                            ? 'http://localhost:3000' + post.profile_pic
+                            ? post.profile_pic.startsWith('http')
+                                ? post.profile_pic
+                                : 'http://localhost:3000' + post.profile_pic
                             : '../images/default.png'}"
                              class="post-avatar">
                         <div class="post-header-info">
@@ -97,15 +99,35 @@ function loadPosts() {
                         <button class="follow-btn" id="followBtn-${post.user_id}"
                                 onclick="toggleFollow(${post.user_id})">
                             Follow
-                        </button>` : ""}
+                        </button>` : `
+                        <button class="edit-btn" onclick="editPost(${post.post_id}, \`${post.content}\`)">
+                            Edit
+                        </button>`}
                     </div>
                     <div class="post-content">${post.content}</div>
                     ${post.image_url
-                        ? `<img src="http://localhost:3000${post.image_url}" class="post-image">`
+                        ? `<img src="${post.image_url.startsWith('http') ? post.image_url : 'http://localhost:3000' + post.image_url}" class="post-image">`
                         : ""}
                     <div class="post-actions">
-                        <button onclick="likePost(${post.post_id})">👍 ${post.like_count} Likes</button>
-                        <button onclick="commentPost(${post.post_id})">💬 ${post.comment_count} Comments</button>
+                        <button onclick="likePost(${post.post_id})" id="likeBtn-${post.post_id}">
+                            Like ${post.like_count > 0 ? '(' + post.like_count + ')' : ''}
+                        </button>
+                        <button onclick="toggleComments(${post.post_id})">
+                            Comments ${post.comment_count > 0 ? '(' + post.comment_count + ')' : ''}
+                        </button>
+                    </div>
+
+                    <!-- Comments section -->
+                    <div class="comments-section" id="comments-${post.post_id}" style="display:none;">
+                        <div class="comments-list" id="comments-list-${post.post_id}"></div>
+                        <div class="comment-input-row">
+                            <input type="text" id="commentInput-${post.post_id}"
+                                   placeholder="Write a comment...">
+                            <button class="comment-submit-btn"
+                                    onclick="submitComment(${post.post_id})">
+                                Post
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -116,6 +138,64 @@ function loadPosts() {
         });
     })
     .catch(err => console.error(err));
+}
+
+// ── Toggle comments ───────────────────────────────────
+function toggleComments(postId) {
+    const section = document.getElementById("comments-" + postId);
+    if (section.style.display === "none") {
+        section.style.display = "block";
+        loadComments(postId);
+    } else {
+        section.style.display = "none";
+    }
+}
+
+// ── Load comments ─────────────────────────────────────
+function loadComments(postId) {
+    fetch("http://localhost:3000/comment/get?postId=" + postId)
+    .then(res => res.json())
+    .then(data => {
+        const list = document.getElementById("comments-list-" + postId);
+        list.innerHTML = "";
+
+        if (data.comments.length === 0) {
+            list.innerHTML = "<p class='no-comments'>No comments yet. Be the first!</p>";
+            return;
+        }
+
+        data.comments.forEach(comment => {
+            list.innerHTML += `
+                <div class="comment-item">
+                    <span class="comment-author">${comment.username}</span>
+                    <span class="comment-text">${comment.text}</span>
+                    <span class="comment-date">${new Date(comment.created_at).toLocaleString()}</span>
+                </div>
+            `;
+        });
+    });
+}
+
+// ── Submit comment ────────────────────────────────────
+function submitComment(postId) {
+    const input = document.getElementById("commentInput-" + postId);
+    const text  = input.value.trim();
+
+    if (!text) return;
+
+    fetch("http://localhost:3000/comment/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, postId, text })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            input.value = "";
+            loadComments(postId);
+            loadPosts();
+        }
+    });
 }
 
 // ── Like post ─────────────────────────────────────────
@@ -131,19 +211,20 @@ function likePost(postId) {
     });
 }
 
-// ── Comment post ──────────────────────────────────────
-function commentPost(postId) {
-    const text = prompt("Write a comment:");
-    if (!text) return;
+// ── Edit post ─────────────────────────────────────────
+function editPost(postId, currentContent) {
+    const newContent = prompt("Edit your post:", currentContent);
+    if (!newContent || newContent === currentContent) return;
 
-    fetch("http://localhost:3000/comment/add", {
+    fetch("http://localhost:3000/post/edit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, postId, text })
+        body: JSON.stringify({ postId, userId, content: newContent })
     })
     .then(res => res.json())
     .then(data => {
         if (data.success) loadPosts();
+        else alert(data.message);
     });
 }
 
@@ -191,7 +272,7 @@ function loadSuggestions() {
         div.innerHTML = "";
 
         if (data.users.length === 0) {
-            div.innerHTML = "<p style='color:#999; font-size:13px; margin-top:8px;'>You're following everyone! 🎉</p>";
+            div.innerHTML = "<p style='color:#b2bec3; font-size:13px; margin-top:8px;'>You are following everyone!</p>";
             return;
         }
 
@@ -200,7 +281,9 @@ function loadSuggestions() {
                 <div class="suggestion-user" id="sug-${user.user_id}">
                     <div class="suggestion-left">
                         <img src="${user.profile_pic
-                            ? 'http://localhost:3000' + user.profile_pic
+                            ? user.profile_pic.startsWith('http')
+                                ? user.profile_pic
+                                : 'http://localhost:3000' + user.profile_pic
                             : '../images/default.png'}">
                         <div>
                             <a href="user.html?userId=${user.user_id}">${user.username}</a>

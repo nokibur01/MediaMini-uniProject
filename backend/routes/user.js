@@ -168,4 +168,26 @@ router.get("/suggestions", (req, res) => {
     );
 });
 
+// ── GET USER STATS (aggregate functions) ──────────────
+router.get("/stats", (req, res) => {
+    const sql = `
+        SELECT
+            u.user_id,
+            u.username,
+            COUNT(DISTINCT p.post_id)       AS total_posts,
+            COUNT(DISTINCT f1.follower_id)  AS total_followers,
+            COUNT(DISTINCT f2.following_id) AS total_following
+        FROM USERS u
+        LEFT JOIN POSTS p    ON p.user_id = u.user_id
+        LEFT JOIN FOLLOWS f1 ON f1.following_id = u.user_id
+        LEFT JOIN FOLLOWS f2 ON f2.follower_id = u.user_id
+        GROUP BY u.user_id, u.username
+        ORDER BY total_followers DESC
+    `;
+
+    db.query(sql, (err, results) => {
+        if (err) return res.json({ success: false, message: "Failed" });
+        res.json({ success: true, stats: results });
+    });
+});
 module.exports = router;
