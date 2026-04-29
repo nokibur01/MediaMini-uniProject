@@ -1,0 +1,87 @@
+/* ── Page layout ───────────────────────────────────── */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 24px 0;
+}
+
+/* ── Card ──────────────────────────────────────────── */
+.card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+}
+
+/* ── Title ─────────────────────────────────────────── */
+.card h2 {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 26px;
+    color: #1a1a2e;
+}
+
+/* ── Subtitle ──────────────────────────────────────── */
+.card p.subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 24px;
+}
+
+/* ── Label ─────────────────────────────────────────── */
+.input-label {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 6px;
+    margin-top: 4px;
+}
+
+/* ── Select ────────────────────────────────────────── */
+select {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+    color: #333;
+}
+
+select:focus {
+    border-color: #4a90e2;
+}
+
+/* ── File input ────────────────────────────────────── */
+input[type="file"] {
+    padding: 8px;
+    border: 1px dashed #4a90e2;
+    background: #f0f7ff;
+    cursor: pointer;
+}
+
+/* ── Image preview ─────────────────────────────────── */
+#imagePreview img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #4a90e2;
+    margin: 10px 0 16px 0;
+    display: block;
+}
+
+/* ── Bottom link ───────────────────────────────────── */
+.bottom-link {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #666;
+}

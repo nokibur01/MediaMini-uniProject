@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Feed</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/feed.css">
+</head>
+<body>
+
+    <div class="navbar">
+        <h1>MediaMini</h1>
+        <div class="nav-links">
+            <span id="welcomeUser"></span>
+            <a href="profile.html">Profile</a>
+            <a href="search.html">Search</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </div>
+
+    <div class="feed-layout">
+
+        <!-- Left — Posts -->
+        <div class="feed-main">
+
+            <!-- Create Post -->
+            <div class="create-post">
+                <textarea id="postContent" placeholder="What's on your mind?"></textarea>
+                <div class="post-actions-bar">
+                    <label for="postImage" class="image-label">📷 Add Image</label>
+                    <input type="file" id="postImage" accept="image/*" style="display:none;">
+                    <span id="imageName"></span>
+                    <button onclick="createPost()">Post</button>
+                </div>
+                <div id="postImagePreview"></div>
+            </div>
+
+            <!-- Posts -->
+            <div id="posts"></div>
+
+        </div>
+
+        <!-- Right — Suggestions -->
+        <div class="feed-sidebar">
+            <div class="suggestions-card">
+                <h3>People You May Know</h3>
+                <div id="suggestions"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../js/feed.js"></script>
+
+</body>
+</html>

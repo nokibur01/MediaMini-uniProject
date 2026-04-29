@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/profile.css">
+</head>
+<body>
+
+    <div class="navbar">
+        <h1>SocialMedia</h1>
+        <div class="nav-links">
+            <a href="feed.html">Feed</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </div>
+
+    <div class="profile-container">
+
+        <!-- Profile Info -->
+        <div class="profile-card">
+            <div class="profile-pic-wrapper">
+                <img id="profilePic" src="../images/default.png" alt="Profile Picture">
+            </div>
+            <div class="profile-info">
+                <h2 id="profileUsername"></h2>
+                <p id="profileFullName"></p>
+                <p id="profileBio"></p>
+                <p id="profileCity"></p>
+                <p id="profileGender"></p>
+                <div class="profile-stats">
+                    <span><strong id="postCount">0</strong> Posts</span>
+                    <span><strong id="followerCount">0</strong> Followers</span>
+                    <span><strong id="followingCount">0</strong> Following</span>
+                </div>
+                <button onclick="toggleEditForm()">Edit Profile</button>
+            </div>
+        </div>
+
+        <!-- Edit Profile Form -->
+        <div class="edit-form" id="editForm" style="display:none;">
+            <h3>Edit Profile</h3>
+            <input type="text" id="editBio" placeholder="Update bio">
+            <label class="input-label">Update Profile Picture</label>
+            <input type="file" id="editProfilePic" accept="image/*">
+            <button onclick="updateProfile()">Save</button>
+            <p class="message" id="editMessage"></p>
+        </div>
+
+        <!-- User Posts -->
+        <div class="profile-posts">
+            <h3>My Posts</h3>
+            <div id="userPosts"></div>
+        </div>
+
+        <!-- User Albums -->
+        <div class="profile-albums">
+            <h3>My Albums</h3>
+            <button onclick="toggleAlbumForm()">+ Create Album</button>
+            <div class="album-form" id="albumForm" style="display:none;">
+                <input type="text" id="albumTitle" placeholder="Album title">
+                <input type="text" id="albumDesc"  placeholder="Description (optional)">
+                <button onclick="createAlbum()">Create</button>
+                <p class="message" id="albumMessage"></p>
+            </div>
+            <div id="userAlbums"></div>
+        </div>
+
+    </div>
+
+    <script src="../js/profile.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,183 @@
+/* ── Reset ─────────────────────────────────────────── */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ── Base ──────────────────────────────────────────── */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f6fa;
+    color: #2d3436;
+}
+
+/* ── Links ─────────────────────────────────────────── */
+a {
+    color: #6c5ce7;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ── Inputs ────────────────────────────────────────── */
+input, textarea, select {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    border: 1.5px solid #dfe6e9;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background: #fff;
+    color: #2d3436;
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #6c5ce7;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+/* ── Button ────────────────────────────────────────── */
+button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+button:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* ── Message ───────────────────────────────────────── */
+.message {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #d63031;
+    min-height: 18px;
+}
+
+.message.success {
+    color: #00b894;
+}
+
+/* ── Navbar ────────────────────────────────────────── */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 14px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar h1 {
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.nav-links a {
+    color: #636e72;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover {
+    color: #6c5ce7;
+    text-decoration: none;
+}
+
+.nav-links span {
+    color: #2d3436;
+    font-weight: 700;
+}
+
+/* ── Card ──────────────────────────────────────────── */
+.card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 36px;
+    width: 100%;
+    max-width: 420px;
+}
+
+/* ── Input label ───────────────────────────────────── */
+.input-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #636e72;
+    margin-bottom: 6px;
+    margin-top: 2px;
+}
+
+/* ── Bottom link ───────────────────────────────────── */
+.bottom-link {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 14px;
+    color: #636e72;
+}
+
+/* ── File input ────────────────────────────────────── */
+input[type="file"] {
+    padding: 10px;
+    border: 1.5px dashed #a29bfe;
+    background: #f8f7ff;
+    cursor: pointer;
+    color: #636e72;
+}
+
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 600px) {
+    .navbar {
+        padding: 12px 16px;
+    }
+
+    .navbar h1 {
+        font-size: 18px;
+    }
+
+    .nav-links {
+        gap: 12px;
+        font-size: 13px;
+    }
+
+    .card {
+        padding: 24px 16px;
+        border-radius: 0;
+        box-shadow: none;
+    }
+}

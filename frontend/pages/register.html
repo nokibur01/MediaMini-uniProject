@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/register.css">
+</head>
+<body>
+
+    <div class="card">
+        <h2>Create Account</h2>
+        <p class="subtitle">Join us today, it's free!</p>
+
+        <input type="text"     id="username"  placeholder="Username *">
+        <input type="email"    id="email"     placeholder="Email *">
+        <input type="password" id="password"  placeholder="Password *">
+        <input type="text"     id="fullName"  placeholder="Full Name">
+
+        <label class="input-label">Date of Birth</label>
+        <input type="date" id="dob">
+
+        <select id="gender">
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
+
+        <input type="text" id="phone" placeholder="Phone Number">
+        <input type="text" id="city"  placeholder="City">
+
+        <label class="input-label">Profile Picture</label>
+        <input type="file" id="profilePic" accept="image/*">
+
+        <div id="imagePreview"></div>
+
+        <button onclick="register()">Register</button>
+
+        <p class="message" id="message"></p>
+
+        <div class="bottom-link">
+            Already have an account? <a href="login.html">Login</a>
+        </div>
+    </div>
+
+    <script src="../js/register.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+/* ── Search container ──────────────────────────────── */
+.search-container {
+    max-width: 600px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+/* ── Search bar ────────────────────────────────────── */
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.search-bar input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.search-bar button {
+    width: auto;
+    padding: 12px 24px;
+    border-radius: 10px;
+}
+
+/* ── User card ─────────────────────────────────────── */
+.user-card {
+    background: #fff;
+    padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.1s;
+}
+
+.user-card:hover {
+    transform: translateY(-2px);
+}
+
+.user-card-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.user-card-left img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #a29bfe;
+}
+
+.user-card-left h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2d3436;
+    margin-bottom: 3px;
+}
+
+.user-card-left p {
+    font-size: 13px;
+    color: #b2bec3;
+}
+
+.user-card button {
+    width: auto;
+    padding: 8px 20px;
+    font-size: 13px;
+    border-radius: 20px;
+    flex-shrink: 0;
+}
+
+.user-card button.following {
+    background: #f5f6fa;
+    color: #636e72;
+}
+
+.user-card button.following:hover {
+    background: #ffe0e0;
+    color: #d63031;
+}
+
+/* ── Responsive ────────────────────────────────────── */
+@media (max-width: 480px) {
+    .search-container {
+        padding: 0 8px;
+    }
+
+    .user-card {
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .user-card-left img {
+        width: 42px;
+        height: 42px;
+    }
+}
