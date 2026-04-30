@@ -2,7 +2,7 @@ const express = require("express");
 const router  = express.Router();
 const db      = require("../db");
 
-// ── TOGGLE LIKE (like / unlike) ───────────────────────
+// ── TOGGLE LIKE (like / unlike)
 router.post("/toggle", (req, res) => {
     const { userId, postId } = req.body;
 
@@ -41,7 +41,7 @@ router.post("/toggle", (req, res) => {
     );
 });
 
-// ── GET LIKE COUNT ────────────────────────────────────
+// ── GET LIKE COUNT 
 router.get("/count", (req, res) => {
     const { postId } = req.query;
 

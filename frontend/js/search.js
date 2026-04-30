@@ -5,14 +5,14 @@ if (!userId) {
     window.location.href = "login.html";
 }
 
-// ── Logout ────────────────────────────────────────────
+// ── Logout 
 function logout() {
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
     window.location.href = "login.html";
 }
 
-// ── Switch tab ────────────────────────────────────────
+// ── Switch tab 
 function switchTab(tab, btn) {
     activeTab = tab;
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -24,7 +24,7 @@ function switchTab(tab, btn) {
     doSearch();
 }
 
-// ── Search ────────────────────────────────────────────
+// ── Search 
 function doSearch() {
     const query = document.getElementById("searchInput").value.trim();
     if (activeTab === "users") {
@@ -34,7 +34,7 @@ function doSearch() {
     }
 }
 
-// ── Search users ──────────────────────────────────────
+// ── Search users 
 function searchUsers(query) {
     fetch("http://localhost:3000/user/all")
     .then(res => res.json())
@@ -77,7 +77,7 @@ function searchUsers(query) {
     });
 }
 
-// ── Search posts ──────────────────────────────────────
+// ── Search posts
 function searchPosts(query) {
     if (!query) {
         document.getElementById("searchResults").innerHTML = "<p style='text-align:center; color:#b2bec3; margin-top:20px;'>Type something to search posts.</p>";
@@ -117,7 +117,7 @@ function searchPosts(query) {
     });
 }
 
-// ── Check follow ──────────────────────────────────────
+// ── Check follow
 function checkFollow(targetId) {
     fetch(`http://localhost:3000/follow/check?followerId=${userId}&followingId=${targetId}`)
     .then(res => res.json())
@@ -135,7 +135,7 @@ function checkFollow(targetId) {
     });
 }
 
-// ── Toggle follow ─────────────────────────────────────
+// ── Toggle follow 
 function toggleFollow(targetId) {
     fetch("http://localhost:3000/follow/toggle", {
         method: "POST",
@@ -148,5 +148,5 @@ function toggleFollow(targetId) {
     });
 }
 
-// ── Add tab styles ────────────────────────────────────
+// ── Add tab styles
 doSearch();

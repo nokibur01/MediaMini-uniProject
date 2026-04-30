@@ -2,7 +2,7 @@ const express = require("express");
 const router  = express.Router();
 const db      = require("../db");
 
-// ── CREATE ALBUM ──────────────────────────────────────
+// ── CREATE ALBUM
 router.post("/create", (req, res) => {
     const { userId, title, description } = req.body;
 
@@ -19,7 +19,7 @@ router.post("/create", (req, res) => {
     );
 });
 
-// ── GET USER ALBUMS ───────────────────────────────────
+// ── GET USER ALBUMS
 router.get("/user", (req, res) => {
     const { userId } = req.query;
 
@@ -43,7 +43,7 @@ router.get("/user", (req, res) => {
     );
 });
 
-// ── ADD POST TO ALBUM ─────────────────────────────────
+// ── ADD POST TO ALBUM 
 router.post("/addpost", (req, res) => {
     const { albumId, postId } = req.body;
 
@@ -60,7 +60,7 @@ router.post("/addpost", (req, res) => {
     );
 });
 
-// ── GET POSTS IN ALBUM ────────────────────────────────
+// ── GET POSTS IN ALBUM 
 router.get("/posts", (req, res) => {
     const { albumId } = req.query;
 
@@ -84,7 +84,7 @@ router.get("/posts", (req, res) => {
     );
 });
 
-// ── DELETE ALBUM ──────────────────────────────────────
+// ── DELETE ALBUM
 router.delete("/delete", (req, res) => {
     const { albumId, userId } = req.body;
 

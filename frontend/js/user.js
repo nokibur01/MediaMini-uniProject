@@ -11,7 +11,7 @@ if (myId == targetId) {
     window.location.href = "profile.html";
 }
 
-// ── Load profile ──────────────────────────────────────
+// ── Load profile 
 function loadProfile() {
     fetch("http://localhost:3000/user/profile?userId=" + targetId)
     .then(res => res.json())
@@ -31,7 +31,7 @@ function loadProfile() {
     });
 }
 
-// ── Load counts ───────────────────────────────────────
+// ── Load counts 
 function loadCounts() {
     fetch("http://localhost:3000/follow/followers?userId=" + targetId)
     .then(res => res.json())
@@ -46,7 +46,7 @@ function loadCounts() {
     });
 }
 
-// ── Load user posts ───────────────────────────────────
+// ── Load user posts
 function loadUserPosts() {
     fetch("http://localhost:3000/post/user?userId=" + targetId)
     .then(res => res.json())
@@ -72,7 +72,7 @@ function loadUserPosts() {
     });
 }
 
-// ── Load user albums ──────────────────────────────────
+// ── Load user albums 
 function loadUserAlbums() {
     fetch("http://localhost:3000/album/user?userId=" + targetId)
     .then(res => res.json())
@@ -97,7 +97,7 @@ function loadUserAlbums() {
     });
 }
 
-// ── Check follow status ───────────────────────────────
+// ── Check follow status 
 function checkFollow() {
     fetch(`http://localhost:3000/follow/check?followerId=${myId}&followingId=${targetId}`)
     .then(res => res.json())
@@ -113,7 +113,7 @@ function checkFollow() {
     });
 }
 
-// ── Toggle follow ─────────────────────────────────────
+// ── Toggle follow 
 function toggleFollow() {
     fetch("http://localhost:3000/follow/toggle", {
         method: "POST",
@@ -129,14 +129,14 @@ function toggleFollow() {
     });
 }
 
-// ── Logout ────────────────────────────────────────────
+// ── Logout 
 function logout() {
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
     window.location.href = "login.html";
 }
 
-// ── Load everything ───────────────────────────────────
+// ── Load everything 
 loadProfile();
 loadCounts();
 loadUserPosts();

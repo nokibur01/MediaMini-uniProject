@@ -7,7 +7,7 @@ if (!userId) {
 
 document.getElementById("welcomeUser").innerText = "Hi, " + username;
 
-// ── Image preview ─────────────────────────────────────
+// ── Image preview 
 document.getElementById("postImage").addEventListener("change", function () {
     const file    = this.files[0];
     const preview = document.getElementById("postImagePreview");
@@ -23,14 +23,14 @@ document.getElementById("postImage").addEventListener("change", function () {
     }
 });
 
-// ── Logout ────────────────────────────────────────────
+// ── Logout
 function logout() {
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
     window.location.href = "login.html";
 }
 
-// ── Create post ───────────────────────────────────────
+// ── Create post
 function createPost() {
     const content   = document.getElementById("postContent").value;
     const imageFile = document.getElementById("postImage").files[0];
@@ -64,7 +64,7 @@ function createPost() {
     .catch(err => console.error(err));
 }
 
-// ── Load posts ────────────────────────────────────────
+// ── Load posts
 function loadPosts() {
     fetch("http://localhost:3000/post/feed?userId=" + userId)
     .then(res => res.json())
@@ -140,7 +140,7 @@ function loadPosts() {
     .catch(err => console.error(err));
 }
 
-// ── Toggle comments ───────────────────────────────────
+// ── Toggle comments 
 function toggleComments(postId) {
     const section = document.getElementById("comments-" + postId);
     if (section.style.display === "none") {
@@ -151,7 +151,7 @@ function toggleComments(postId) {
     }
 }
 
-// ── Load comments ─────────────────────────────────────
+// ── Load comments
 function loadComments(postId) {
     fetch("http://localhost:3000/comment/get?postId=" + postId)
     .then(res => res.json())
@@ -176,7 +176,7 @@ function loadComments(postId) {
     });
 }
 
-// ── Submit comment ────────────────────────────────────
+// ── Submit comment
 function submitComment(postId) {
     const input = document.getElementById("commentInput-" + postId);
     const text  = input.value.trim();
@@ -198,7 +198,7 @@ function submitComment(postId) {
     });
 }
 
-// ── Like post ─────────────────────────────────────────
+// ── Like post
 function likePost(postId) {
     fetch("http://localhost:3000/like/toggle", {
         method: "POST",
@@ -211,7 +211,7 @@ function likePost(postId) {
     });
 }
 
-// ── Edit post ─────────────────────────────────────────
+// ── Edit post
 function editPost(postId, currentContent) {
     const newContent = prompt("Edit your post:", currentContent);
     if (!newContent || newContent === currentContent) return;
@@ -228,7 +228,7 @@ function editPost(postId, currentContent) {
     });
 }
 
-// ── Check follow status ───────────────────────────────
+// ── Check follow status 
 function checkFollow(targetId) {
     fetch(`http://localhost:3000/follow/check?followerId=${userId}&followingId=${targetId}`)
     .then(res => res.json())
@@ -246,7 +246,7 @@ function checkFollow(targetId) {
     });
 }
 
-// ── Toggle follow ─────────────────────────────────────
+// ── Toggle follow 
 function toggleFollow(targetId) {
     fetch("http://localhost:3000/follow/toggle", {
         method: "POST",
@@ -263,7 +263,7 @@ function toggleFollow(targetId) {
     });
 }
 
-// ── Load suggestions ──────────────────────────────────
+// ── Load suggestions
 function loadSuggestions() {
     fetch("http://localhost:3000/user/suggestions?userId=" + userId)
     .then(res => res.json())
@@ -297,7 +297,7 @@ function loadSuggestions() {
     });
 }
 
-// ── Follow from suggestion ────────────────────────────
+// ── Follow from suggestion
 function followSuggestion(targetId) {
     fetch("http://localhost:3000/follow/toggle", {
         method: "POST",
@@ -315,6 +315,6 @@ function followSuggestion(targetId) {
     });
 }
 
-// ── Load everything on page load ──────────────────────
+// ── Load everything on page load
 loadPosts();
 loadSuggestions();

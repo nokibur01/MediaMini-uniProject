@@ -1,4 +1,4 @@
-// ── Image preview ─────────────────────────────────────
+// ── Image preview 
 document.getElementById("profilePic").addEventListener("change", function () {
     const file    = this.files[0];
     const preview = document.getElementById("imagePreview");
@@ -12,7 +12,7 @@ document.getElementById("profilePic").addEventListener("change", function () {
     }
 });
 
-// ── Register ──────────────────────────────────────────
+// ── Register 
 function register() {
     const username   = document.getElementById("username").value;
     const email      = document.getElementById("email").value;

@@ -4,7 +4,7 @@ const db      = require("../db");
 const multer  = require("multer");
 const path    = require("path");
 
-// ── Multer setup for post images ──────────────────────
+// ── Multer setup for post images 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, "../../frontend/images/posts"));
@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// ── CREATE POST ───────────────────────────────────────
+// ── CREATE POST
 router.post("/create", upload.single("image"), (req, res) => {
     const { userId, content } = req.body;
     const imageUrl = req.file ? "/images/posts/" + req.file.filename : null;
@@ -36,7 +36,7 @@ router.post("/create", upload.single("image"), (req, res) => {
     );
 });
 
-// ── GET FEED ──────────────────────────────────────────
+// ── GET FEED 
 router.get("/feed", (req, res) => {
     const { userId } = req.query;
 
@@ -66,7 +66,7 @@ router.get("/feed", (req, res) => {
     });
 });
 
-// ── GET ALL POSTS BY USER ─────────────────────────────
+// ── GET ALL POSTS BY USER
 router.get("/user", (req, res) => {
     const { userId } = req.query;
 
@@ -92,7 +92,7 @@ router.get("/user", (req, res) => {
     );
 });
 
-// ── DELETE POST ───────────────────────────────────────
+// ── DELETE POST
 router.delete("/delete", (req, res) => {
     const { postId, userId } = req.body;
 
@@ -110,7 +110,7 @@ router.delete("/delete", (req, res) => {
         }
     );
 });
-// ── GET POST STATS (aggregate functions) ──────────────
+// ── GET POST STATS (aggregate functions) 
 router.get("/stats", (req, res) => {
     const sql = `
         SELECT 
@@ -133,7 +133,7 @@ router.get("/stats", (req, res) => {
     });
 });
 
-// ── SEARCH POSTS ──────────────────────────────────────
+// ── SEARCH POSTS 
 router.get("/search", (req, res) => {
     const { query } = req.query;
 
@@ -161,7 +161,7 @@ router.get("/search", (req, res) => {
     );
 });
 
-// ── EDIT POST ─────────────────────────────────────────
+// ── EDIT POST
 router.post("/edit", (req, res) => {
     const { postId, userId, content } = req.body;
 

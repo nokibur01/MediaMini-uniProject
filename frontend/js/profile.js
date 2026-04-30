@@ -5,7 +5,7 @@ if (!userId) {
     window.location.href = "login.html";
 }
 
-// ── Load profile ──────────────────────────────────────
+// ── Load profile
 function loadProfile() {
     fetch("http://localhost:3000/user/profile?userId=" + userId)
     .then(res => res.json())
@@ -31,7 +31,7 @@ function loadProfile() {
     });
 }
 
-// ── Load follower/following counts ────────────────────
+// ── Load follower/following counts
 function loadCounts() {
     fetch("http://localhost:3000/follow/followers?userId=" + userId)
     .then(res => res.json())
@@ -46,7 +46,7 @@ function loadCounts() {
     });
 }
 
-// ── Load user posts ───────────────────────────────────
+// ── Load user posts
 function loadUserPosts() {
     fetch("http://localhost:3000/post/user?userId=" + userId)
     .then(res => res.json())
@@ -72,7 +72,7 @@ function loadUserPosts() {
     });
 }
 
-// ── Load user albums ──────────────────────────────────
+// ── Load user albums
 function loadUserAlbums() {
     fetch("http://localhost:3000/album/user?userId=" + userId)
     .then(res => res.json())
@@ -97,13 +97,13 @@ function loadUserAlbums() {
     });
 }
 
-// ── Toggle edit form ──────────────────────────────────
+// ── Toggle edit form 
 function toggleEditForm() {
     const form = document.getElementById("editForm");
     form.style.display = form.style.display === "none" ? "block" : "none";
 }
 
-// ── Update profile ────────────────────────────────────
+// ── Update profile
 function updateProfile() {
     const bio        = document.getElementById("editBio").value;
     const picFile    = document.getElementById("editProfilePic").files[0];
@@ -129,13 +129,13 @@ function updateProfile() {
     });
 }
 
-// ── Toggle album form ─────────────────────────────────
+// ── Toggle album form
 function toggleAlbumForm() {
     const form = document.getElementById("albumForm");
     form.style.display = form.style.display === "none" ? "block" : "none";
 }
 
-// ── Create album ──────────────────────────────────────
+// ── Create album
 function createAlbum() {
     const title       = document.getElementById("albumTitle").value;
     const description = document.getElementById("albumDesc").value;
@@ -161,14 +161,14 @@ function createAlbum() {
     });
 }
 
-// ── Logout ────────────────────────────────────────────
+// ── Logout 
 function logout() {
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
     window.location.href = "login.html";
 }
 
-// ── Load everything on page load ──────────────────────
+// ── Load everything on page load 
 loadProfile();
 loadCounts();
 loadUserPosts();

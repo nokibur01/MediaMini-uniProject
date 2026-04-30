@@ -1,4 +1,4 @@
-/* ── Feed layout ───────────────────────────────────── */
+/*Feed layout*/
 .feed-layout {
     display: flex;
     gap: 20px;
@@ -8,19 +8,19 @@
     align-items: flex-start;
 }
 
-/* ── Main feed ─────────────────────────────────────── */
+/*Main feed */
 .feed-main {
     flex: 1;
     min-width: 0;
 }
 
-/* ── Sidebar ───────────────────────────────────────── */
+/*Sidebar*/
 .feed-sidebar {
     width: 240px;
     flex-shrink: 0;
 }
 
-/* ── Suggestions card ──────────────────────────────── */
+/*Suggestions card*/
 .suggestions-card {
     background: #fff;
     padding: 18px;
@@ -253,7 +253,7 @@
     transform: none;
 }
 
-/* ── Follow button ─────────────────────────────────── */
+/*Follow button*/
 .follow-btn {
     width: auto !important;
     padding: 6px 16px !important;
@@ -271,7 +271,7 @@
     color: #d63031;
 }
 
-/* ── Edit button ───────────────────────────────────── */
+/*Edit button*/
 .edit-btn {
     width: auto !important;
     padding: 6px 14px !important;
@@ -286,7 +286,7 @@
     color: #6c5ce7 !important;
 }
 
-/* ── Responsive ────────────────────────────────────── */
+/*Responsive*/
 @media (max-width: 768px) {
     .feed-layout {
         flex-direction: column;
@@ -313,7 +313,7 @@
         padding: 14px;
     }
 }
-/* ── Comments section ──────────────────────────────── */
+/*Comments section*/
 .comments-section {
     margin-top: 12px;
     padding-top: 12px;
@@ -359,7 +359,7 @@
     padding: 8px 0;
 }
 
-/* ── Comment input ─────────────────────────────────── */
+/* Comment input */
 .comment-input-row {
     display: flex;
     gap: 8px;

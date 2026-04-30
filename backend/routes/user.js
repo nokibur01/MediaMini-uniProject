@@ -4,7 +4,7 @@ const db      = require("../db");
 const multer  = require("multer");
 const path    = require("path");
 
-// ── Multer setup for profile pictures ────────────────
+// ── Multer setup for profile pictures
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, "../../frontend/images/profiles"));
@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// ── REGISTER ──────────────────────────────────────────
+// ── REGISTER
 router.post("/register", upload.single("profilePic"), (req, res) => {
     const { username, email, password, fullName, dob, gender, phone, city } = req.body;
     const profilePic = req.file ? "/images/profiles/" + req.file.filename : "";
@@ -51,7 +51,7 @@ router.post("/register", upload.single("profilePic"), (req, res) => {
     });
 });
 
-// ── LOGIN ─────────────────────────────────────────────
+// ── LOGIN
 router.post("/login", (req, res) => {
     const { email, password } = req.body;
 
@@ -81,7 +81,7 @@ router.post("/login", (req, res) => {
     );
 });
 
-// ── GET USER ──────────────────────────────────────────
+// ── GET USER
 router.get("/profile", (req, res) => {
     const { userId } = req.query;
 
@@ -106,7 +106,7 @@ router.get("/profile", (req, res) => {
     );
 });
 
-// ── UPDATE PROFILE ────────────────────────────────────
+// ── UPDATE PROFILE
 router.post("/update", upload.single("profilePic"), (req, res) => {
     const { userId, bio } = req.body;
     const profilePic = req.file ? "/images/profiles/" + req.file.filename : null;
@@ -134,7 +134,7 @@ router.post("/update", upload.single("profilePic"), (req, res) => {
     }
 });
 
-// ── GET ALL USERS ─────────────────────────────────────
+// ── GET ALL USERS
 router.get("/all", (req, res) => {
     db.query("SELECT user_id, username, profile_pic, bio FROM USERS",
         (err, results) => {
@@ -144,7 +144,7 @@ router.get("/all", (req, res) => {
     );
 });
 
-// ── GET SUGGESTED USERS ───────────────────────────────
+// ── GET SUGGESTED USERS 
 router.get("/suggestions", (req, res) => {
     const { userId } = req.query;
 
@@ -168,7 +168,7 @@ router.get("/suggestions", (req, res) => {
     );
 });
 
-// ── GET USER STATS (aggregate functions) ──────────────
+// ── GET USER STATS (aggregate functions) 
 router.get("/stats", (req, res) => {
     const sql = `
         SELECT
