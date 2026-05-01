@@ -1,0 +1,10 @@
+Table Creation          Done        schema.sqlData 
+Insertion               Done        All route files
+Frontend Design         Done        All CSS files
+Frontend-DB Connection  Done        All JS + route files
+Table Join              Done        post.js, comment.js, follow.js, album.js
+Proper JOIN operations  Done        post.js stats route 
+Constraints             Done        schema.sql + phpMyAdmin
+Aggregate Functions     Done        post.js + user.js stats 
+routesUpdate Operation  Done        post.js + user.jsSearch 
+Operation               Done        post.js + search.js
