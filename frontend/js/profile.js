@@ -103,21 +103,26 @@ function toggleEditForm() {
     form.style.display = form.style.display === "none" ? "block" : "none";
 }
 
-// ── Update profile
 function updateProfile() {
-    const bio        = document.getElementById("editBio").value;
-    const picFile    = document.getElementById("editProfilePic").files[0];
-    const formData   = new FormData();
+    const bio     = document.getElementById("editBio").value;
+    const picFile = document.getElementById("editProfilePic").files[0];
 
-    formData.append("userId", userId);
-    formData.append("bio", bio);
     if (picFile) {
-        formData.append("profilePic", picFile);
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            sendUpdate(bio, e.target.result);
+        };
+        reader.readAsDataURL(picFile);
+    } else {
+        sendUpdate(bio, "");
     }
+}
 
+function sendUpdate(bio, profilePic) {
     fetch("http://localhost:3000/user/update", {
         method: "POST",
-        body: formData
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, bio, profilePic })
     })
     .then(res => res.json())
     .then(data => {

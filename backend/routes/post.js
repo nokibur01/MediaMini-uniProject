@@ -1,42 +1,25 @@
 const express = require("express");
 const router  = express.Router();
 const db      = require("../db");
-const multer  = require("multer");
-const path    = require("path");
 
-// ── Multer setup for post images 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, "../../frontend/images/posts"));
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
-});
-
-const upload = multer({ storage });
-
-// ── CREATE POST
-router.post("/create", upload.single("image"), (req, res) => {
-    const { userId, content } = req.body;
-    const imageUrl = req.file ? "/images/posts/" + req.file.filename : null;
+// ── CREATE POST ───────────────────────────────────────
+router.post("/create", (req, res) => {
+    const { userId, content, imageUrl } = req.body;
 
     if (!userId || !content) {
         return res.json({ success: false, message: "All fields are required" });
     }
 
     db.query("INSERT INTO POSTS (user_id, content, image_url) VALUES (?, ?, ?)",
-        [userId, content, imageUrl],
+        [userId, content, imageUrl || ""],
         (err, result) => {
-            if (err) {
-                return res.json({ success: false, message: "Post creation failed" });
-            }
+            if (err) return res.json({ success: false, message: "Post creation failed" });
             res.json({ success: true, message: "Post created" });
         }
     );
 });
 
-// ── GET FEED 
+// ── GET FEED ──────────────────────────────────────────
 router.get("/feed", (req, res) => {
     const { userId } = req.query;
 
@@ -47,7 +30,7 @@ router.get("/feed", (req, res) => {
     const sql = `
         SELECT p.post_id, p.content, p.image_url, p.created_at,
                u.username, u.user_id, u.profile_pic,
-               (SELECT COUNT(*) FROM LIKES WHERE post_id = p.post_id) AS like_count,
+               (SELECT COUNT(*) FROM LIKES    WHERE post_id = p.post_id) AS like_count,
                (SELECT COUNT(*) FROM COMMENTS WHERE post_id = p.post_id) AS comment_count
         FROM POSTS p
         JOIN USERS u ON p.user_id = u.user_id
@@ -59,14 +42,12 @@ router.get("/feed", (req, res) => {
     `;
 
     db.query(sql, [userId, userId], (err, results) => {
-        if (err) {
-            return res.json({ success: false, message: "Failed to load feed" });
-        }
+        if (err) return res.json({ success: false, message: "Failed to load feed" });
         res.json({ success: true, posts: results });
     });
 });
 
-// ── GET ALL POSTS BY USER
+// ── GET USER POSTS ────────────────────────────────────
 router.get("/user", (req, res) => {
     const { userId } = req.query;
 
@@ -84,56 +65,50 @@ router.get("/user", (req, res) => {
         ORDER BY p.created_at DESC`,
         [userId],
         (err, results) => {
-            if (err) {
-                return res.json({ success: false, message: "Failed to load posts" });
-            }
+            if (err) return res.json({ success: false, message: "Failed to load posts" });
             res.json({ success: true, posts: results });
         }
     );
 });
 
-// ── DELETE POST
+// ── DELETE POST ───────────────────────────────────────
 router.delete("/delete", (req, res) => {
     const { postId, userId } = req.body;
 
     if (!postId || !userId) {
-        return res.json({ success: false, message: "postId and userId are required" });
+        return res.json({ success: false, message: "All fields are required" });
     }
 
     db.query("DELETE FROM POSTS WHERE post_id = ? AND user_id = ?",
         [postId, userId],
-        (err, result) => {
-            if (err) {
-                return res.json({ success: false, message: "Delete failed" });
-            }
+        (err) => {
+            if (err) return res.json({ success: false, message: "Delete failed" });
             res.json({ success: true, message: "Post deleted" });
         }
     );
 });
-// ── GET POST STATS (aggregate functions) 
-router.get("/stats", (req, res) => {
-    const sql = `
-        SELECT 
-            p.post_id,
-            p.content,
-            u.username,
-            COUNT(DISTINCT l.like_id)      AS total_likes,
-            COUNT(DISTINCT c.comment_id)   AS total_comments
-        FROM POSTS p
-        JOIN USERS u ON p.user_id = u.user_id
-        LEFT JOIN LIKES l    ON l.post_id = p.post_id
-        LEFT JOIN COMMENTS c ON c.post_id = p.post_id
-        GROUP BY p.post_id, p.content, u.username
-        ORDER BY total_likes DESC
-    `;
 
-    db.query(sql, (err, results) => {
-        if (err) return res.json({ success: false, message: "Failed" });
-        res.json({ success: true, stats: results });
-    });
+// ── EDIT POST ─────────────────────────────────────────
+router.post("/edit", (req, res) => {
+    const { postId, userId, content } = req.body;
+
+    if (!postId || !userId || !content) {
+        return res.json({ success: false, message: "All fields are required" });
+    }
+
+    db.query("UPDATE POSTS SET content = ? WHERE post_id = ? AND user_id = ?",
+        [content, postId, userId],
+        (err, result) => {
+            if (err) return res.json({ success: false, message: "Edit failed" });
+            if (result.affectedRows === 0) {
+                return res.json({ success: false, message: "Post not found" });
+            }
+            res.json({ success: true, message: "Post updated" });
+        }
+    );
 });
 
-// ── SEARCH POSTS 
+// ── SEARCH POSTS ──────────────────────────────────────
 router.get("/search", (req, res) => {
     const { query } = req.query;
 
@@ -161,22 +136,58 @@ router.get("/search", (req, res) => {
     );
 });
 
-// ── EDIT POST
-router.post("/edit", (req, res) => {
-    const { postId, userId, content } = req.body;
+// ── POST STATS ────────────────────────────────────────
+router.get("/stats", (req, res) => {
+    const sql = `
+        SELECT
+            p.post_id,
+            p.content,
+            u.username,
+            COUNT(DISTINCT l.like_id)    AS total_likes,
+            COUNT(DISTINCT c.comment_id) AS total_comments
+        FROM POSTS p
+        JOIN USERS u ON p.user_id = u.user_id
+        LEFT JOIN LIKES l    ON l.post_id = p.post_id
+        LEFT JOIN COMMENTS c ON c.post_id = p.post_id
+        GROUP BY p.post_id, p.content, u.username
+        ORDER BY total_likes DESC
+    `;
 
-    if (!postId || !userId || !content) {
-        return res.json({ success: false, message: "All fields are required" });
-    }
+    db.query(sql, (err, results) => {
+        if (err) return res.json({ success: false, message: "Failed" });
+        res.json({ success: true, stats: results });
+    });
+});
 
-    db.query("UPDATE POSTS SET content = ? WHERE post_id = ? AND user_id = ?",
-        [content, postId, userId],
-        (err, result) => {
-            if (err) return res.json({ success: false, message: "Edit failed" });
-            if (result.affectedRows === 0) {
-                return res.json({ success: false, message: "Post not found or unauthorized" });
-            }
-            res.json({ success: true, message: "Post updated" });
+// ── ADMIN GET ALL POSTS ───────────────────────────────
+router.get("/admin/posts", (req, res) => {
+    db.query(`
+        SELECT p.post_id, p.content, p.image_url, p.created_at,
+               u.username,
+               COUNT(DISTINCT l.like_id)    AS total_likes,
+               COUNT(DISTINCT c.comment_id) AS total_comments
+        FROM POSTS p
+        JOIN USERS u ON p.user_id = u.user_id
+        LEFT JOIN LIKES l    ON l.post_id = p.post_id
+        LEFT JOIN COMMENTS c ON c.post_id = p.post_id
+        GROUP BY p.post_id
+        ORDER BY p.created_at DESC`,
+        (err, results) => {
+            if (err) return res.json({ success: false, message: "Failed" });
+            res.json({ success: true, posts: results });
+        }
+    );
+});
+
+// ── ADMIN DELETE POST ─────────────────────────────────
+router.delete("/admin/post/:id", (req, res) => {
+    const postId = req.params.id;
+
+    db.query("DELETE FROM POSTS WHERE post_id = ?",
+        [postId],
+        (err) => {
+            if (err) return res.json({ success: false, message: "Delete failed" });
+            res.json({ success: true, message: "Post deleted" });
         }
     );
 });

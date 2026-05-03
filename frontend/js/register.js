@@ -1,4 +1,4 @@
-// ── Image preview 
+// ── Image preview ─────────────────────────────────────
 document.getElementById("profilePic").addEventListener("change", function () {
     const file    = this.files[0];
     const preview = document.getElementById("imagePreview");
@@ -12,7 +12,7 @@ document.getElementById("profilePic").addEventListener("change", function () {
     }
 });
 
-// ── Register 
+// ── Register ──────────────────────────────────────────
 function register() {
     const username   = document.getElementById("username").value;
     const email      = document.getElementById("email").value;
@@ -22,31 +22,30 @@ function register() {
     const gender     = document.getElementById("gender").value;
     const phone      = document.getElementById("phone").value;
     const city       = document.getElementById("city").value;
-    const profilePic = document.getElementById("profilePic").files[0];
+    const picFile    = document.getElementById("profilePic").files[0];
 
     if (!username || !email || !password) {
         document.getElementById("message").innerText = "Username, email and password are required";
         return;
     }
 
-    // Use FormData because we are sending a file
-    const formData = new FormData();
-    formData.append("username",   username);
-    formData.append("email",      email);
-    formData.append("password",   password);
-    formData.append("fullName",   fullName);
-    formData.append("dob",        dob);
-    formData.append("gender",     gender);
-    formData.append("phone",      phone);
-    formData.append("city",       city);
-
-    if (profilePic) {
-        formData.append("profilePic", profilePic);
+    // Convert image to Base64 then send
+    if (picFile) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            sendRegister(username, email, password, fullName, dob, gender, phone, city, e.target.result);
+        };
+        reader.readAsDataURL(picFile);
+    } else {
+        sendRegister(username, email, password, fullName, dob, gender, phone, city, "");
     }
+}
 
+function sendRegister(username, email, password, fullName, dob, gender, phone, city, profilePic) {
     fetch("http://localhost:3000/user/register", {
         method: "POST",
-        body: formData
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password, fullName, dob, gender, phone, city, profilePic })
     })
     .then(res => res.json())
     .then(data => {
@@ -58,4 +57,17 @@ function register() {
         }
     })
     .catch(err => console.error(err));
+}
+
+// ── Show/hide password ────────────────────────────────
+function togglePassword() {
+    const input = document.getElementById("password");
+    const btn   = document.getElementById("toggleBtn");
+    if (input.type === "password") {
+        input.type = "text";
+        btn.innerText = "Hide";
+    } else {
+        input.type = "password";
+        btn.innerText = "Show";
+    }
 }

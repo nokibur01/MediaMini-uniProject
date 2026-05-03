@@ -12,8 +12,12 @@
         <h2>Welcome Back</h2>
         <p class="subtitle">Login to your account</p>
 
-        <input type="email"    id="email"    placeholder="Email">
-        <input type="password" id="password" placeholder="Password">
+        <input type="email" id="email" placeholder="Email">
+
+        <div class="password-wrapper">
+            <input type="password" id="password" placeholder="Password">
+            <button type="button" id="toggleBtn" class="toggle-btn" onclick="togglePassword()">Show</button>
+        </div>
 
         <button onclick="login()">Login</button>
 

@@ -10,12 +10,17 @@
 
     <div class="card">
         <h2>Create Account</h2>
-        <p class="subtitle">Join us today, it's free!</p>
+        <p class="subtitle">Join us today, it is free!</p>
 
         <input type="text"     id="username"  placeholder="Username *">
         <input type="email"    id="email"     placeholder="Email *">
-        <input type="password" id="password"  placeholder="Password *">
-        <input type="text"     id="fullName"  placeholder="Full Name">
+
+        <div class="password-wrapper">
+            <input type="password" id="password" placeholder="Password *">
+            <button type="button" id="toggleBtn" class="toggle-btn" onclick="togglePassword()">Show</button>
+        </div>
+
+        <input type="text" id="fullName" placeholder="Full Name">
 
         <label class="input-label">Date of Birth</label>
         <input type="date" id="dob">

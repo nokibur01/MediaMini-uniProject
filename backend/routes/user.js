@@ -1,25 +1,10 @@
 const express = require("express");
 const router  = express.Router();
 const db      = require("../db");
-const multer  = require("multer");
-const path    = require("path");
 
-// ── Multer setup for profile pictures
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, "../../frontend/images/profiles"));
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
-});
-
-const upload = multer({ storage });
-
-// ── REGISTER
-router.post("/register", upload.single("profilePic"), (req, res) => {
-    const { username, email, password, fullName, dob, gender, phone, city } = req.body;
-    const profilePic = req.file ? "/images/profiles/" + req.file.filename : "";
+// ── REGISTER ──────────────────────────────────────────
+router.post("/register", (req, res) => {
+    const { username, email, password, fullName, dob, gender, phone, city, profilePic } = req.body;
 
     if (!username || !email || !password) {
         return res.json({ success: false, message: "Username, email and password are required" });
@@ -38,7 +23,7 @@ router.post("/register", upload.single("profilePic"), (req, res) => {
             db.query(`INSERT INTO USERS 
                 (username, email, password, full_name, dob, gender, phone, city, profile_pic) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [username, email, password, fullName, dob, gender, phone, city, profilePic],
+                [username, email, password, fullName, dob, gender, phone, city, profilePic || ""],
                 (err, result) => {
                     if (err) {
                         console.log(err);
@@ -51,7 +36,7 @@ router.post("/register", upload.single("profilePic"), (req, res) => {
     });
 });
 
-// ── LOGIN
+// ── LOGIN ─────────────────────────────────────────────
 router.post("/login", (req, res) => {
     const { email, password } = req.body;
 
@@ -62,9 +47,7 @@ router.post("/login", (req, res) => {
     db.query("SELECT * FROM USERS WHERE email = ? AND password = ?",
         [email, password],
         (err, result) => {
-            if (err) {
-                return res.json({ success: false, message: "Login failed" });
-            }
+            if (err) return res.json({ success: false, message: "Login failed" });
             if (result.length > 0) {
                 const user = result[0];
                 res.json({
@@ -81,7 +64,7 @@ router.post("/login", (req, res) => {
     );
 });
 
-// ── GET USER
+// ── GET USER ──────────────────────────────────────────
 router.get("/profile", (req, res) => {
     const { userId } = req.query;
 
@@ -89,14 +72,12 @@ router.get("/profile", (req, res) => {
         return res.json({ success: false, message: "userId is required" });
     }
 
-    db.query(`SELECT user_id, username, email, bio, profile_pic, 
-              full_name, dob, gender, phone, city, created_at 
+    db.query(`SELECT user_id, username, email, bio, profile_pic,
+              full_name, dob, gender, phone, city, created_at
               FROM USERS WHERE user_id = ?`,
         [userId],
         (err, result) => {
-            if (err) {
-                return res.json({ success: false, message: "Failed to get user" });
-            }
+            if (err) return res.json({ success: false, message: "Failed to get user" });
             if (result.length > 0) {
                 res.json({ success: true, user: result[0] });
             } else {
@@ -106,10 +87,9 @@ router.get("/profile", (req, res) => {
     );
 });
 
-// ── UPDATE PROFILE
-router.post("/update", upload.single("profilePic"), (req, res) => {
-    const { userId, bio } = req.body;
-    const profilePic = req.file ? "/images/profiles/" + req.file.filename : null;
+// ── UPDATE PROFILE ────────────────────────────────────
+router.post("/update", (req, res) => {
+    const { userId, bio, profilePic } = req.body;
 
     if (!userId) {
         return res.json({ success: false, message: "userId is required" });
@@ -134,7 +114,7 @@ router.post("/update", upload.single("profilePic"), (req, res) => {
     }
 });
 
-// ── GET ALL USERS
+// ── GET ALL USERS ─────────────────────────────────────
 router.get("/all", (req, res) => {
     db.query("SELECT user_id, username, profile_pic, bio FROM USERS",
         (err, results) => {
@@ -144,7 +124,7 @@ router.get("/all", (req, res) => {
     );
 });
 
-// ── GET SUGGESTED USERS 
+// ── GET SUGGESTED USERS ───────────────────────────────
 router.get("/suggestions", (req, res) => {
     const { userId } = req.query;
 
@@ -168,7 +148,7 @@ router.get("/suggestions", (req, res) => {
     );
 });
 
-// ── GET USER STATS (aggregate functions) 
+// ── GET USER STATS ────────────────────────────────────
 router.get("/stats", (req, res) => {
     const sql = `
         SELECT
@@ -190,4 +170,58 @@ router.get("/stats", (req, res) => {
         res.json({ success: true, stats: results });
     });
 });
+
+// ── ADMIN LOGIN ───────────────────────────────────────
+router.post("/admin/login", (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.json({ success: false, message: "All fields are required" });
+    }
+
+    db.query("SELECT * FROM ADMINS WHERE username = ? AND password = ?",
+        [username, password],
+        (err, result) => {
+            if (err) return res.json({ success: false, message: "Login failed" });
+            if (result.length > 0) {
+                res.json({ success: true, message: "Login successful", admin: result[0] });
+            } else {
+                res.json({ success: false, message: "Invalid credentials" });
+            }
+        }
+    );
+});
+
+// ── ADMIN GET ALL USERS ───────────────────────────────
+router.get("/admin/users", (req, res) => {
+    db.query(`
+        SELECT u.user_id, u.username, u.email, u.full_name,
+               u.city, u.created_at,
+               COUNT(DISTINCT p.post_id)     AS total_posts,
+               COUNT(DISTINCT f.follower_id) AS total_followers
+        FROM USERS u
+        LEFT JOIN POSTS p   ON p.user_id = u.user_id
+        LEFT JOIN FOLLOWS f ON f.following_id = u.user_id
+        GROUP BY u.user_id
+        ORDER BY u.created_at DESC`,
+        (err, results) => {
+            if (err) return res.json({ success: false, message: "Failed" });
+            res.json({ success: true, users: results });
+        }
+    );
+});
+
+// ── ADMIN DELETE USER ─────────────────────────────────
+router.delete("/admin/user/:id", (req, res) => {
+    const userId = req.params.id;
+
+    db.query("DELETE FROM USERS WHERE user_id = ?",
+        [userId],
+        (err) => {
+            if (err) return res.json({ success: false, message: "Delete failed" });
+            res.json({ success: true, message: "User deleted" });
+        }
+    );
+});
+
 module.exports = router;

@@ -160,6 +160,36 @@ input[type="file"] {
     color: #636e72;
 }
 
+/* ── Password wrapper ──────────────────────────────── */
+.password-wrapper {
+    position: relative;
+    margin-bottom: 14px;
+}
+
+.password-wrapper input {
+    margin-bottom: 0;
+    padding-right: 70px;
+}
+
+.toggle-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: auto;
+    padding: 4px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    background: #f5f6fa;
+    color: #636e72;
+}
+
+.toggle-btn:hover {
+    background: #ede9fe;
+    color: #6c5ce7;
+    transform: translateY(-50%);
+}
+
 /* ── Responsive ────────────────────────────────────── */
 @media (max-width: 600px) {
     .navbar {
