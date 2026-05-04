@@ -1,17 +1,24 @@
-const myId       = localStorage.getItem("userId");
-const params     = new URLSearchParams(window.location.search);
-const targetId   = params.get("userId");
+const myId     = localStorage.getItem("userId");
+const params   = new URLSearchParams(window.location.search);
+const targetId = params.get("userId");
 
 if (!myId) {
     window.location.href = "login.html";
 }
 
-// If visiting own profile redirect to profile.html
 if (myId == targetId) {
     window.location.href = "profile.html";
 }
 
-// ── Load profile 
+// Image helper
+function getImage(src) {
+    if (!src || src === "") return "../images/default.png";
+    if (src.startsWith("data:")) return src;
+    if (src.startsWith("http")) return src;
+    return "http://localhost:3000" + src;
+}
+
+// Load profile
 function loadProfile() {
     fetch("http://localhost:3000/user/profile?userId=" + targetId)
     .then(res => res.json())
@@ -22,16 +29,12 @@ function loadProfile() {
             document.getElementById("profileBio").innerText      = user.bio || "No bio yet";
             document.getElementById("profileFullName").innerText = user.full_name || "";
             document.getElementById("profileCity").innerText     = user.city ? "📍 " + user.city : "";
-
-            const pic = document.getElementById("profilePic");
-            pic.src = user.profile_pic
-                ? "http://localhost:3000" + user.profile_pic
-                : "../images/default.png";
+            document.getElementById("profilePic").src            = getImage(user.profile_pic);
         }
     });
 }
 
-// ── Load counts 
+// Load counts
 function loadCounts() {
     fetch("http://localhost:3000/follow/followers?userId=" + targetId)
     .then(res => res.json())
@@ -46,7 +49,7 @@ function loadCounts() {
     });
 }
 
-// ── Load user posts
+// Load user posts
 function loadUserPosts() {
     fetch("http://localhost:3000/post/user?userId=" + targetId)
     .then(res => res.json())
@@ -56,7 +59,7 @@ function loadUserPosts() {
         div.innerHTML = "";
 
         if (data.posts.length === 0) {
-            div.innerHTML = "<p style='color:#999;'>No posts yet.</p>";
+            div.innerHTML = "<p style='color:#b2bec3;'>No posts yet.</p>";
             return;
         }
 
@@ -64,7 +67,7 @@ function loadUserPosts() {
             div.innerHTML += `
                 <div class="post-card">
                     <div class="post-content">${post.content}</div>
-                    ${post.image_url ? `<img src="http://localhost:3000${post.image_url}" class="post-image">` : ""}
+                    ${post.image_url ? `<img src="${getImage(post.image_url)}" class="post-image">` : ""}
                     <div class="post-date">${new Date(post.created_at).toLocaleString()}</div>
                 </div>
             `;
@@ -72,7 +75,7 @@ function loadUserPosts() {
     });
 }
 
-// ── Load user albums 
+// Load user albums
 function loadUserAlbums() {
     fetch("http://localhost:3000/album/user?userId=" + targetId)
     .then(res => res.json())
@@ -81,7 +84,7 @@ function loadUserAlbums() {
         div.innerHTML = "";
 
         if (data.albums.length === 0) {
-            div.innerHTML = "<p style='color:#999;'>No albums yet.</p>";
+            div.innerHTML = "<p style='color:#b2bec3;'>No albums yet.</p>";
             return;
         }
 
@@ -97,7 +100,7 @@ function loadUserAlbums() {
     });
 }
 
-// ── Check follow status 
+// Check follow
 function checkFollow() {
     fetch(`http://localhost:3000/follow/check?followerId=${myId}&followingId=${targetId}`)
     .then(res => res.json())
@@ -113,7 +116,7 @@ function checkFollow() {
     });
 }
 
-// ── Toggle follow 
+// Toggle follow
 function toggleFollow() {
     fetch("http://localhost:3000/follow/toggle", {
         method: "POST",
@@ -129,14 +132,14 @@ function toggleFollow() {
     });
 }
 
-// ── Logout 
+// Logout
 function logout() {
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
     window.location.href = "login.html";
 }
 
-// ── Load everything 
+// Load everything 
 loadProfile();
 loadCounts();
 loadUserPosts();

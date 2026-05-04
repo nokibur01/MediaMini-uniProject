@@ -7,7 +7,15 @@ if (!userId) {
 
 document.getElementById("welcomeUser").innerText = "Hi, " + username;
 
-// ── Image preview 
+// Image helper 
+function getImage(src) {
+    if (!src || src === "") return "../images/default.png";
+    if (src.startsWith("data:")) return src;
+    if (src.startsWith("http")) return src;
+    return "http://localhost:3000" + src;
+}
+
+// Image preview 
 document.getElementById("postImage").addEventListener("change", function () {
     const file    = this.files[0];
     const preview = document.getElementById("postImagePreview");
@@ -23,14 +31,14 @@ document.getElementById("postImage").addEventListener("change", function () {
     }
 });
 
-// ── Logout
+// Logout
 function logout() {
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
     window.location.href = "login.html";
 }
 
-// ── Create post
+// Create post
 function createPost() {
     const content   = document.getElementById("postContent").value;
     const imageFile = document.getElementById("postImage").files[0];
@@ -40,16 +48,22 @@ function createPost() {
         return;
     }
 
-    const formData = new FormData();
-    formData.append("userId", userId);
-    formData.append("content", content);
     if (imageFile) {
-        formData.append("image", imageFile);
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            sendPost(content, e.target.result);
+        };
+        reader.readAsDataURL(imageFile);
+    } else {
+        sendPost(content, "");
     }
+}
 
+function sendPost(content, imageUrl) {
     fetch("http://localhost:3000/post/create", {
         method: "POST",
-        body: formData
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, content, imageUrl })
     })
     .then(res => res.json())
     .then(data => {
@@ -64,7 +78,7 @@ function createPost() {
     .catch(err => console.error(err));
 }
 
-// ── Load posts
+// Load posts
 function loadPosts() {
     fetch("http://localhost:3000/post/feed?userId=" + userId)
     .then(res => res.json())
@@ -83,12 +97,7 @@ function loadPosts() {
             postsDiv.innerHTML += `
                 <div class="post-card" id="post-${post.post_id}">
                     <div class="post-header">
-                        <img src="${post.profile_pic
-                            ? post.profile_pic.startsWith('http')
-                                ? post.profile_pic
-                                : 'http://localhost:3000' + post.profile_pic
-                            : '../images/default.png'}"
-                             class="post-avatar">
+                        <img src="${getImage(post.profile_pic)}" class="post-avatar">
                         <div class="post-header-info">
                             <div class="post-author">
                                 <a href="user.html?userId=${post.user_id}">${post.username}</a>
@@ -105,11 +114,9 @@ function loadPosts() {
                         </button>`}
                     </div>
                     <div class="post-content">${post.content}</div>
-                    ${post.image_url
-                        ? `<img src="${post.image_url.startsWith('http') ? post.image_url : 'http://localhost:3000' + post.image_url}" class="post-image">`
-                        : ""}
+                    ${post.image_url ? `<img src="${getImage(post.image_url)}" class="post-image">` : ""}
                     <div class="post-actions">
-                        <button onclick="likePost(${post.post_id})" id="likeBtn-${post.post_id}">
+                        <button onclick="likePost(${post.post_id})">
                             Like ${post.like_count > 0 ? '(' + post.like_count + ')' : ''}
                         </button>
                         <button onclick="toggleComments(${post.post_id})">
@@ -117,7 +124,6 @@ function loadPosts() {
                         </button>
                     </div>
 
-                    <!-- Comments section -->
                     <div class="comments-section" id="comments-${post.post_id}" style="display:none;">
                         <div class="comments-list" id="comments-list-${post.post_id}"></div>
                         <div class="comment-input-row">
@@ -140,7 +146,7 @@ function loadPosts() {
     .catch(err => console.error(err));
 }
 
-// ── Toggle comments 
+// Toggle comments
 function toggleComments(postId) {
     const section = document.getElementById("comments-" + postId);
     if (section.style.display === "none") {
@@ -151,7 +157,7 @@ function toggleComments(postId) {
     }
 }
 
-// ── Load comments
+// Load comments
 function loadComments(postId) {
     fetch("http://localhost:3000/comment/get?postId=" + postId)
     .then(res => res.json())
@@ -176,7 +182,7 @@ function loadComments(postId) {
     });
 }
 
-// ── Submit comment
+// Submit comment
 function submitComment(postId) {
     const input = document.getElementById("commentInput-" + postId);
     const text  = input.value.trim();
@@ -198,7 +204,7 @@ function submitComment(postId) {
     });
 }
 
-// ── Like post
+// Like post
 function likePost(postId) {
     fetch("http://localhost:3000/like/toggle", {
         method: "POST",
@@ -211,7 +217,7 @@ function likePost(postId) {
     });
 }
 
-// ── Edit post
+// Edit post
 function editPost(postId, currentContent) {
     const newContent = prompt("Edit your post:", currentContent);
     if (!newContent || newContent === currentContent) return;
@@ -228,7 +234,7 @@ function editPost(postId, currentContent) {
     });
 }
 
-// ── Check follow status 
+// Check follow status
 function checkFollow(targetId) {
     fetch(`http://localhost:3000/follow/check?followerId=${userId}&followingId=${targetId}`)
     .then(res => res.json())
@@ -246,7 +252,7 @@ function checkFollow(targetId) {
     });
 }
 
-// ── Toggle follow 
+// Toggle follow
 function toggleFollow(targetId) {
     fetch("http://localhost:3000/follow/toggle", {
         method: "POST",
@@ -263,7 +269,7 @@ function toggleFollow(targetId) {
     });
 }
 
-// ── Load suggestions
+// Load suggestions
 function loadSuggestions() {
     fetch("http://localhost:3000/user/suggestions?userId=" + userId)
     .then(res => res.json())
@@ -280,11 +286,7 @@ function loadSuggestions() {
             div.innerHTML += `
                 <div class="suggestion-user" id="sug-${user.user_id}">
                     <div class="suggestion-left">
-                        <img src="${user.profile_pic
-                            ? user.profile_pic.startsWith('http')
-                                ? user.profile_pic
-                                : 'http://localhost:3000' + user.profile_pic
-                            : '../images/default.png'}">
+                        <img src="${getImage(user.profile_pic)}">
                         <div>
                             <a href="user.html?userId=${user.user_id}">${user.username}</a>
                             <p>${user.bio || ""}</p>
@@ -297,7 +299,7 @@ function loadSuggestions() {
     });
 }
 
-// ── Follow from suggestion
+// Follow from suggestion
 function followSuggestion(targetId) {
     fetch("http://localhost:3000/follow/toggle", {
         method: "POST",
@@ -315,6 +317,6 @@ function followSuggestion(targetId) {
     });
 }
 
-// ── Load everything on page load
+// Load everything on page load
 loadPosts();
 loadSuggestions();

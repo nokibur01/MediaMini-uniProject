@@ -67,6 +67,21 @@
             <div id="userAlbums"></div>
         </div>
 
+        <!-- Album Posts Modal -->
+        <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+        <div class="modal" id="albumModal">
+            <div class="modal-header">
+                <h3 id="modalAlbumTitle">Album</h3>
+                <button class="modal-close" onclick="closeModal()">X</button>
+            </div>
+            <div class="modal-tabs">
+                <button class="tab-btn active" id="tabPosts" onclick="switchModalTab('posts')">Posts in Album</button>
+                <button class="tab-btn" id="tabAdd" onclick="switchModalTab('add')">Add Post</button>
+            </div>
+            <div id="modalPostsList"></div>
+            <div id="modalAddList" style="display:none;"></div>
+        </div>
+
     </div>
 
     <script src="../js/profile.js"></script>

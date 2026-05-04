@@ -2,7 +2,7 @@ const express = require("express");
 const router  = express.Router();
 const db      = require("../db");
 
-// ── CREATE POST ───────────────────────────────────────
+// CREATE POST
 router.post("/create", (req, res) => {
     const { userId, content, imageUrl } = req.body;
 
@@ -19,7 +19,7 @@ router.post("/create", (req, res) => {
     );
 });
 
-// ── GET FEED ──────────────────────────────────────────
+// GET FEED
 router.get("/feed", (req, res) => {
     const { userId } = req.query;
 
@@ -47,7 +47,7 @@ router.get("/feed", (req, res) => {
     });
 });
 
-// ── GET USER POSTS ────────────────────────────────────
+// GET USER POSTS
 router.get("/user", (req, res) => {
     const { userId } = req.query;
 
@@ -71,7 +71,7 @@ router.get("/user", (req, res) => {
     );
 });
 
-// ── DELETE POST ───────────────────────────────────────
+// DELETE POST
 router.delete("/delete", (req, res) => {
     const { postId, userId } = req.body;
 
@@ -88,7 +88,7 @@ router.delete("/delete", (req, res) => {
     );
 });
 
-// ── EDIT POST ─────────────────────────────────────────
+// EDIT POST
 router.post("/edit", (req, res) => {
     const { postId, userId, content } = req.body;
 
@@ -108,7 +108,7 @@ router.post("/edit", (req, res) => {
     );
 });
 
-// ── SEARCH POSTS ──────────────────────────────────────
+// SEARCH POSTS
 router.get("/search", (req, res) => {
     const { query } = req.query;
 
@@ -136,7 +136,7 @@ router.get("/search", (req, res) => {
     );
 });
 
-// ── POST STATS ────────────────────────────────────────
+// POST STATS
 router.get("/stats", (req, res) => {
     const sql = `
         SELECT
@@ -159,7 +159,7 @@ router.get("/stats", (req, res) => {
     });
 });
 
-// ── ADMIN GET ALL POSTS ───────────────────────────────
+// ADMIN GET ALL POSTS
 router.get("/admin/posts", (req, res) => {
     db.query(`
         SELECT p.post_id, p.content, p.image_url, p.created_at,
@@ -179,7 +179,7 @@ router.get("/admin/posts", (req, res) => {
     );
 });
 
-// ── ADMIN DELETE POST ─────────────────────────────────
+// ADMIN DELETE POST
 router.delete("/admin/post/:id", (req, res) => {
     const postId = req.params.id;
 

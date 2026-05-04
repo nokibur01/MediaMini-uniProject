@@ -5,14 +5,22 @@ if (!userId) {
     window.location.href = "login.html";
 }
 
-// ── Logout 
+// Image helper
+function getImage(src) {
+    if (!src || src === "") return "../images/default.png";
+    if (src.startsWith("data:")) return src;
+    if (src.startsWith("http")) return src;
+    return "http://localhost:3000" + src;
+}
+
+// Logout
 function logout() {
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
     window.location.href = "login.html";
 }
 
-// ── Switch tab 
+// Switch tab
 function switchTab(tab, btn) {
     activeTab = tab;
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
@@ -24,7 +32,7 @@ function switchTab(tab, btn) {
     doSearch();
 }
 
-// ── Search 
+// Search
 function doSearch() {
     const query = document.getElementById("searchInput").value.trim();
     if (activeTab === "users") {
@@ -34,7 +42,7 @@ function doSearch() {
     }
 }
 
-// ── Search users 
+// Search users
 function searchUsers(query) {
     fetch("http://localhost:3000/user/all")
     .then(res => res.json())
@@ -59,9 +67,7 @@ function searchUsers(query) {
             resultsDiv.innerHTML += `
                 <div class="user-card" id="card-${user.user_id}">
                     <div class="user-card-left">
-                        <img src="${user.profile_pic
-                            ? 'http://localhost:3000' + user.profile_pic
-                            : '../images/default.png'}">
+                        <img src="${getImage(user.profile_pic)}">
                         <div>
                             <h4><a href="user.html?userId=${user.user_id}">${user.username}</a></h4>
                             <p>${user.bio || "No bio"}</p>
@@ -77,7 +83,7 @@ function searchUsers(query) {
     });
 }
 
-// ── Search posts
+// Search posts
 function searchPosts(query) {
     if (!query) {
         document.getElementById("searchResults").innerHTML = "<p style='text-align:center; color:#b2bec3; margin-top:20px;'>Type something to search posts.</p>";
@@ -99,17 +105,15 @@ function searchPosts(query) {
             resultsDiv.innerHTML += `
                 <div class="user-card">
                     <div class="user-card-left">
-                        <img src="${post.profile_pic
-                            ? 'http://localhost:3000' + post.profile_pic
-                            : '../images/default.png'}">
+                        <img src="${getImage(post.profile_pic)}">
                         <div>
                             <h4><a href="user.html?userId=${post.user_id}">${post.username}</a></h4>
                             <p>${post.content}</p>
                         </div>
                     </div>
                     <div style="font-size:12px; color:#a29bfe; text-align:right; flex-shrink:0;">
-                        👍 ${post.like_count}<br>
-                        💬 ${post.comment_count}
+                        ${post.like_count} Likes<br>
+                        ${post.comment_count} Comments
                     </div>
                 </div>
             `;
@@ -117,7 +121,7 @@ function searchPosts(query) {
     });
 }
 
-// ── Check follow
+// Check follow
 function checkFollow(targetId) {
     fetch(`http://localhost:3000/follow/check?followerId=${userId}&followingId=${targetId}`)
     .then(res => res.json())
@@ -135,7 +139,7 @@ function checkFollow(targetId) {
     });
 }
 
-// ── Toggle follow 
+// Toggle follow
 function toggleFollow(targetId) {
     fetch("http://localhost:3000/follow/toggle", {
         method: "POST",
@@ -148,5 +152,5 @@ function toggleFollow(targetId) {
     });
 }
 
-// ── Add tab styles
+// Load on start 
 doSearch();

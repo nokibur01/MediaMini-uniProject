@@ -2,7 +2,7 @@ const express = require("express");
 const router  = express.Router();
 const db      = require("../db");
 
-// ── FOLLOW / UNFOLLOW 
+// FOLLOW / UNFOLLOW 
 router.post("/toggle", (req, res) => {
     const { followerId, followingId } = req.body;
 
@@ -45,7 +45,7 @@ router.post("/toggle", (req, res) => {
     );
 });
 
-// ── GET FOLLOWERS 
+// GET FOLLOWERS 
 router.get("/followers", (req, res) => {
     const { userId } = req.query;
 
@@ -66,7 +66,7 @@ router.get("/followers", (req, res) => {
     );
 });
 
-// ── GET FOLLOWING 
+// GET FOLLOWING 
 router.get("/following", (req, res) => {
     const { userId } = req.query;
 
@@ -87,7 +87,7 @@ router.get("/following", (req, res) => {
     );
 });
 
-// ── CHECK IF FOLLOWING 
+// CHECK IF FOLLOWING 
 router.get("/check", (req, res) => {
     const { followerId, followingId } = req.query;
 

@@ -2,7 +2,7 @@ const express = require("express");
 const router  = express.Router();
 const db      = require("../db");
 
-// ── REGISTER ──────────────────────────────────────────
+// REGISTER
 router.post("/register", (req, res) => {
     const { username, email, password, fullName, dob, gender, phone, city, profilePic } = req.body;
 
@@ -36,7 +36,7 @@ router.post("/register", (req, res) => {
     });
 });
 
-// ── LOGIN ─────────────────────────────────────────────
+// LOGIN
 router.post("/login", (req, res) => {
     const { email, password } = req.body;
 
@@ -64,7 +64,7 @@ router.post("/login", (req, res) => {
     );
 });
 
-// ── GET USER ──────────────────────────────────────────
+// GET USER
 router.get("/profile", (req, res) => {
     const { userId } = req.query;
 
@@ -87,7 +87,7 @@ router.get("/profile", (req, res) => {
     );
 });
 
-// ── UPDATE PROFILE ────────────────────────────────────
+// UPDATE PROFILE
 router.post("/update", (req, res) => {
     const { userId, bio, profilePic } = req.body;
 
@@ -114,7 +114,7 @@ router.post("/update", (req, res) => {
     }
 });
 
-// ── GET ALL USERS ─────────────────────────────────────
+// GET ALL USERS
 router.get("/all", (req, res) => {
     db.query("SELECT user_id, username, profile_pic, bio FROM USERS",
         (err, results) => {
@@ -124,7 +124,7 @@ router.get("/all", (req, res) => {
     );
 });
 
-// ── GET SUGGESTED USERS ───────────────────────────────
+// GET SUGGESTED USERS
 router.get("/suggestions", (req, res) => {
     const { userId } = req.query;
 
@@ -148,7 +148,7 @@ router.get("/suggestions", (req, res) => {
     );
 });
 
-// ── GET USER STATS ────────────────────────────────────
+// GET USER STATS
 router.get("/stats", (req, res) => {
     const sql = `
         SELECT
@@ -171,7 +171,7 @@ router.get("/stats", (req, res) => {
     });
 });
 
-// ── ADMIN LOGIN ───────────────────────────────────────
+// ADMIN LOGIN
 router.post("/admin/login", (req, res) => {
     const { username, password } = req.body;
 
@@ -192,7 +192,7 @@ router.post("/admin/login", (req, res) => {
     );
 });
 
-// ── ADMIN GET ALL USERS ───────────────────────────────
+// ADMIN GET ALL USERS
 router.get("/admin/users", (req, res) => {
     db.query(`
         SELECT u.user_id, u.username, u.email, u.full_name,
@@ -211,7 +211,7 @@ router.get("/admin/users", (req, res) => {
     );
 });
 
-// ── ADMIN DELETE USER ─────────────────────────────────
+// ADMIN DELETE USER
 router.delete("/admin/user/:id", (req, res) => {
     const userId = req.params.id;
 

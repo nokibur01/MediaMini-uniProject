@@ -2,7 +2,7 @@ const express = require("express");
 const router  = express.Router();
 const db      = require("../db");
 
-// ── ADD COMMENT
+// ADD COMMENT
 router.post("/add", (req, res) => {
     const { userId, postId, text } = req.body;
 
@@ -21,7 +21,7 @@ router.post("/add", (req, res) => {
     );
 });
 
-// ── GET COMMENTS FOR A POST
+// GET COMMENTS FOR A POST
 router.get("/get", (req, res) => {
     const { postId } = req.query;
 
@@ -46,7 +46,7 @@ router.get("/get", (req, res) => {
     );
 });
 
-// ── DELETE COMMENT
+// DELETE COMMENT
 router.delete("/delete", (req, res) => {
     const { commentId, userId } = req.body;
 
